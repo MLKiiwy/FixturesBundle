@@ -1,0 +1,9 @@
+.php_cs.cache
+composer.phar
+composer.lock
+/vendor/
+/features/fixtures/TestApp/cache/*
+/features/fixtures/TestApp/logs/*
+/features/fixtures/TestApp/fixtures/*
+.idea
+behat
