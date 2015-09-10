@@ -31,7 +31,7 @@ class FixturesExtension extends Extension
         // Build loaders
         foreach ($config as $entityManagerName => $loaderConfig) {
             $entityManagerIdentifier = sprintf('doctrine.orm.%s_entity_manager', $entityManagerName);
-            $loaderDefinition = new Definition('FixturesBundle\Loader\FixturesLoader');
+            $loaderDefinition = new Definition('LaFourchette\FixturesBundle\Loader\FixturesLoader');
             $loaderDefinition->addArgument(new Reference($entityManagerIdentifier));
             $loaderDefinition->addArgument(new Reference('kernel'));
             $loaderDefinition->addMethodCall('setGroups', [$loaderConfig['groups']]);
