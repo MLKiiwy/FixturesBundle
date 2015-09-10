@@ -20,7 +20,7 @@ class AppKernel extends Kernel
         return [
             new FrameworkBundle(),
             new DoctrineBundle(),
-            new FixturesBundle()
+            new FixturesBundle(),
             new TestBundle(),
         ];
     }
