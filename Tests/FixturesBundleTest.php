@@ -15,7 +15,7 @@ class FixturesBundleTest extends \PHPUnit_Framework_TestCase
         $containerBuilderMock = $this->prophesize('Symfony\Component\DependencyInjection\ContainerBuilder');
 
         $containerBuilderMock
-            ->addCompilerPass(Argument::type('FixturesBundle\DependencyInjection\Compiler\RegistryCompilerPass'))
+            ->addCompilerPass(Argument::type('LaFourchette\FixturesBundle\DependencyInjection\Compiler\RegistryCompilerPass'))
             ->shouldBeCalledTimes(1);
 
         $fixturesBundle = new FixturesBundle();

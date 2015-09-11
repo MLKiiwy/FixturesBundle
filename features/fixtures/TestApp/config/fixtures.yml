@@ -1,0 +1,14 @@
+fixtures:
+    default:
+        groups:
+            all:
+                - @TestBundle/Resources/fixtures/{set}/dummy
+                - @TestBundle/Resources/fixtures/{set}/related_dummy
+                - @TestBundle/Resources/fixtures/{set}/child_dummy
+
+        dependencies:
+            @TestBundle/Resources/fixtures/{set}/related_dummy:
+                - @TestBundle/Resources/fixtures/{set}/child_dummy
+
+            @TestBundle/Resources/fixtures/{set}/child_dummy:
+                - @TestBundle/Resources/fixtures/{set}/dummy

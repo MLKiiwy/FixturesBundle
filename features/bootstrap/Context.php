@@ -41,7 +41,7 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
      */
     protected function printDebug($string)
     {
-        echo "\n\033[36m|  ".strtr($string, array("\n" => "\n|  "))."\033[0m\n\n";
+        echo "\n\033[36m|  " . strtr($string, array("\n" => "\n|  ")) . "\033[0m\n\n";
     }
 
     /**
@@ -54,23 +54,31 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
     protected function replaceParameters($string)
     {
         foreach (self::$crossScenarioParameterBag as $name => $value) {
-            $string = str_replace('{{ '.$name.' }}', $value, $string);
+            $string = str_replace('{{ ' . $name . ' }}', $value, $string);
         }
 
         return $string;
     }
 
     /**
-     * @param string $filePath
+     * @param $string
      *
      * @return string
      */
-    protected function getRealPath($filePath)
+    protected function replaceDates($string)
     {
-        if (strlen($filePath) > 1 && !in_array($filePath[0], array('.', '/'))) {
-            $filePath = __DIR__.'/../'.$filePath;
-        }
+        return preg_replace_callback(
+            '/##([\w]+)\((.*)\)##/',
+            function ($matches) {
+                switch ($matches[1]) {
+                    case "now":
+                        $dt = new \DateTime();
 
-        return $filePath;
+                        return $dt->format($matches[2]);
+                        break;
+                }
+            },
+            $string
+        );
     }
 }

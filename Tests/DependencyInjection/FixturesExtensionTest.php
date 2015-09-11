@@ -27,7 +27,7 @@ class LaFourchetteCoreExtensionTest extends AbstractExtensionTestCase
     public function dataProviderServices()
     {
         return [
-            ['fixtures.loader.registry', 'FixturesBundle\Registry'],
+            ['fixtures.loader.registry', 'LaFourchette\FixturesBundle\Registry'],
         ];
     }
 }

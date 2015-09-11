@@ -22,7 +22,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
      */
     public function testExceptionAddLoader()
     {
-        $fixturesLoaderMock = $this->prophesize('FixturesBundle\Loader\FixturesLoader');
+        $fixturesLoaderMock = $this->prophesize('LaFourchette\FixturesBundle\Loader\FixturesLoader');
 
         $registry = new Registry();
         $registry->addLoader('plop', $fixturesLoaderMock->reveal());
@@ -31,7 +31,7 @@ class RegistryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetLoader()
     {
-        $fixturesLoaderMock = $this->prophesize('FixturesBundle\Loader\FixturesLoader');
+        $fixturesLoaderMock = $this->prophesize('LaFourchette\FixturesBundle\Loader\FixturesLoader');
 
         $registry = new Registry();
         $registry->addLoader('plop', $fixturesLoaderMock->reveal());

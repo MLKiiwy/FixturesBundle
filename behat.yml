@@ -3,8 +3,15 @@ default:
         default:
             contexts:
                - Behat\MinkExtension\Context\MinkContext
+               - CommonContext:
+                   - '@profiler'
                - CommandContext
-               - FeatureContext
+               - LaFourchette\FixturesBundle\Behat\Context\FixturesContext:
+                   - "@service_container"
+                   - "@fixtures.loader.registry"
+               - DatabaseContext:
+                   - "@profiler"
+                   - "@doctrine"
     extensions:
         Behat\Symfony2Extension:
             kernel:
