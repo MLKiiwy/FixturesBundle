@@ -220,7 +220,7 @@ class DatabaseContext extends Context
     {
         $query = sprintf('SELECT COUNT(*) AS total FROM %s', $table);
         $result = $this->doctrine->getConnection($connection)->executeQuery($query)->fetch();
-        if ((int) $result['total'] !== $count) {
+        if ((int) $result['total'] != $count) {
             throw new \Exception(sprintf('Table %s contains %d records, %d expected', $table, (int) $result['total'], $count));
         }
     }

@@ -65,7 +65,10 @@ class FixturesLoader
         }
 
         $loader = new Fixtures($this->entityManager);
-        $loader->addProcessor($this->fixturesDataProcessor);
+
+        if ($this->fixturesDataProcessor) {
+            $loader->addProcessor($this->fixturesDataProcessor);
+        }
 
         $options = ['providers' => $this->providers];
 
@@ -79,14 +82,19 @@ class FixturesLoader
     public function purgeDatabase()
     {
         $connection = $this->entityManager->getConnection();
+        $foreignKeyCheck = $connection->getDriver()->getDatabasePlatform()->supportsForeignKeyConstraints();
 
-        $connection->exec('SET FOREIGN_KEY_CHECKS = 0;');
+        if ($foreignKeyCheck) {
+            $connection->exec('SET FOREIGN_KEY_CHECKS = 0;');
+        }
 
         $purger = new ORMPurger($this->entityManager);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
         $purger->purge();
 
-        $connection->exec('SET FOREIGN_KEY_CHECKS = 1;');
+        if ($foreignKeyCheck) {
+            $connection->exec('SET FOREIGN_KEY_CHECKS = 1;');
+        }
     }
 
     /**

@@ -37,7 +37,9 @@ class FixturesExtension extends Extension
             $loaderDefinition->addMethodCall('setGroups', [$loaderConfig['groups']]);
             $loaderDefinition->addMethodCall('setDependencies', [$loaderConfig['dependencies']]);
             $loaderDefinition->addMethodCall('setProviderClasses', [$loaderConfig['providerClasses']]);
-            $loaderDefinition->addMethodCall('setFixturesDataProcessor', [new Reference($loaderConfig['fixturesDataProcessor'])]);
+            if ($loaderConfig['fixturesDataProcessor']) {
+                $loaderDefinition->addMethodCall('setFixturesDataProcessor', [new Reference($loaderConfig['fixturesDataProcessor'])]);
+            }
             $loaderDefinition->addTag(Registry::LOADER_TAG, ['name' => $entityManagerName]);
             $container->setDefinition('fixtures.loader.'.$entityManagerName, $loaderDefinition);
         }

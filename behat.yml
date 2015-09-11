@@ -24,3 +24,8 @@ default:
             sessions:
                 default:
                     symfony2: ~
+        AdamQuaile\Behat\CommandRunnerExtension:
+              beforeSuite:
+                  - php features/fixtures/TestApp/console --env=test doctrine:database:drop --force
+                  - php features/fixtures/TestApp/console --env=test doctrine:database:create --force
+                  - php features/fixtures/TestApp/console --env=test doctrine:schema:update --force
