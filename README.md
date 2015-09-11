@@ -1,3 +1,4 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/badges/build.png?b=master)](https://scrutinizer-ci.com/g/lafourchette/FixturesBundle/build-status/master) [![Build Status](https://travis-ci.org/lafourchette/FixturesBundle.svg?branch=fix%2Fphpcs)](https://travis-ci.org/lafourchette/FixturesBundle)
 #FixturesBundle
 
 Simplify usage of fixtures into your code / tests / dev.
