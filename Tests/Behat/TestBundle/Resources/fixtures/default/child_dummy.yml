@@ -1,0 +1,4 @@
+LaFourchette\FixturesBundle\Tests\Behat\TestBundle\Entity\ChildDummy:
+    ChildDummy.{1..10}:
+        name: ChildDummy<current()>
+        parent: @Dummy.<current()>

@@ -115,7 +115,7 @@ class DatabaseContext extends Context
         $actualCount = 0;
         foreach ($queries[$connection] as $query) {
             if (preg_match('/^'.$type.'.* /i', $query['sql'])) {
-                $actualCount++;
+                ++$actualCount;
             }
         }
 
@@ -148,7 +148,7 @@ class DatabaseContext extends Context
         $actualCount = 0;
         foreach ($queries[$connection] as $query) {
             if (preg_match('/^ '.$table.' /i', $query['sql'])) {
-                $actualCount++;
+                ++$actualCount;
             }
         }
 
@@ -186,7 +186,7 @@ class DatabaseContext extends Context
                 $regexp = '/^'.$type.' '.$table.' /i';
             }
             if (preg_match($regexp, $query['sql'])) {
-                $actualCount++;
+                ++$actualCount;
             }
         }
 

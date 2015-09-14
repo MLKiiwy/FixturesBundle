@@ -1,3 +1,6 @@
 services:
     fixtures.loader.registry:
         class: LaFourchette\FixturesBundle\Registry
+
+    fixtures.event_dispatcher:
+        class: LaFourchette\FixturesBundle\Event\FixturesEventDispatcher

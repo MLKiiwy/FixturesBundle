@@ -4,8 +4,10 @@ namespace LaFourchette\FixturesBundle\Loader;
 
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
+use LaFourchette\FixturesBundle\Event\FixturesLoaderEvent;
 use Nelmio\Alice\Fixtures;
 use Nelmio\Alice\ProcessorInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 class FixturesLoader
@@ -32,7 +34,7 @@ class FixturesLoader
     /**
      * @var array
      */
-    private $providers = [];
+    private $providers = array();
 
     /**
      * @var array
@@ -45,13 +47,19 @@ class FixturesLoader
     private $dependencies;
 
     /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * @param EntityManager   $entityManager
      * @param KernelInterface $kernel
      */
-    public function __construct(EntityManager $entityManager, KernelInterface $kernel)
+    public function __construct(EntityManager $entityManager, KernelInterface $kernel, EventDispatcher $eventDispatcher)
     {
         $this->entityManager = $entityManager;
         $this->kernel = $kernel;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -60,6 +68,8 @@ class FixturesLoader
      */
     public function load(array $fixtures, $purge = true)
     {
+        $this->eventDispatcher->dispatch(FixturesLoaderEvent::EVENT_BEFORE_LOAD_FIXTURES, new FixturesLoaderEvent());
+
         if ($purge) {
             $this->purgeDatabase();
         }
@@ -77,6 +87,8 @@ class FixturesLoader
         foreach ($fixtures as $fixture) {
             $loader->loadFiles($this->getFixturePathByName($fixture), $options);
         }
+
+        $this->eventDispatcher->dispatch(FixturesLoaderEvent::EVENT_AFTER_LOAD_FIXTURES, new FixturesLoaderEvent());
     }
 
     public function purgeDatabase()
@@ -128,7 +140,7 @@ class FixturesLoader
      */
     public function setProviderClasses($providerClasses)
     {
-        $providers = [];
+        $providers = array();
         foreach ($providerClasses as $class) {
             $providers[] = new $class();
         }
