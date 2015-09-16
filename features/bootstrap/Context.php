@@ -41,7 +41,7 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
      */
     protected function printDebug($string)
     {
-        echo "\n\033[36m|  " . strtr($string, array("\n" => "\n|  ")) . "\033[0m\n\n";
+        echo "\n\033[36m|  ".strtr($string, array("\n" => "\n|  "))."\033[0m\n\n";
     }
 
     /**
@@ -54,7 +54,7 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
     protected function replaceParameters($string)
     {
         foreach (self::$crossScenarioParameterBag as $name => $value) {
-            $string = str_replace('{{ ' . $name . ' }}', $value, $string);
+            $string = str_replace('{{ '.$name.' }}', $value, $string);
         }
 
         return $string;
@@ -71,7 +71,7 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
             '/##([\w]+)\((.*)\)##/',
             function ($matches) {
                 switch ($matches[1]) {
-                    case "now":
+                    case 'now':
                         $dt = new \DateTime();
 
                         return $dt->format($matches[2]);
