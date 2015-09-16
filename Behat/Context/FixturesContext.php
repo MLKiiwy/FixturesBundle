@@ -12,12 +12,12 @@ class FixturesContext implements Context
     /**
      * @var ContainerInterface
      */
-    private $container;
+    protected $container;
 
     /**
      * @var Registry
      */
-    private $fixtureLoaderRegistry;
+    protected $fixtureLoaderRegistry;
 
     /**
      * @param ContainerInterface $container
