@@ -18,6 +18,10 @@ class FixturesBundleTest extends \PHPUnit_Framework_TestCase
             ->addCompilerPass(Argument::type('LaFourchette\FixturesBundle\DependencyInjection\Compiler\RegistryCompilerPass'))
             ->shouldBeCalledTimes(1);
 
+        $containerBuilderMock
+            ->addCompilerPass(Argument::type('LaFourchette\FixturesBundle\DependencyInjection\Compiler\EventDispatcherCompilerPass'))
+            ->shouldBeCalledTimes(1);
+
         $fixturesBundle = new FixturesBundle();
         $fixturesBundle->build($containerBuilderMock->reveal());
     }

@@ -34,6 +34,7 @@ class FixturesExtension extends Extension
             $loaderDefinition = new Definition('LaFourchette\FixturesBundle\Loader\FixturesLoader');
             $loaderDefinition->addArgument(new Reference($entityManagerIdentifier));
             $loaderDefinition->addArgument(new Reference('kernel'));
+            $loaderDefinition->addArgument(new Reference('fixtures.event_dispatcher'));
             $loaderDefinition->addMethodCall('setGroups', [$loaderConfig['groups']]);
             $loaderDefinition->addMethodCall('setDependencies', [$loaderConfig['dependencies']]);
             $loaderDefinition->addMethodCall('setProviderClasses', [$loaderConfig['providerClasses']]);

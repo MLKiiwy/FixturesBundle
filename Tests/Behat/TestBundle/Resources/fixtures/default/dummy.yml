@@ -1,0 +1,3 @@
+LaFourchette\FixturesBundle\Tests\Behat\TestBundle\Entity\Dummy:
+    Dummy.{1..10}:
+        name: Dummy<current()>

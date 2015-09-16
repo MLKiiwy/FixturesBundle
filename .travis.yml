@@ -19,11 +19,11 @@ matrix:
     fast_finish: true
 
 before_script:
-    - composer self-update
     - if [[ "$TRAVIS_PHP_VERSION" = "5.6" ]]; then wget http://get.sensiolabs.org/php-cs-fixer.phar; fi;
 
 install:
-    - composer install
+    - composer self-update
+    - composer install --no-interaction --prefer-dist --optimize-autoloader --verbose --ansi
 
 script:
     - vendor/bin/behat --tags '~@todo'
