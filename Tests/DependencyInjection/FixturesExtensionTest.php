@@ -5,7 +5,7 @@ namespace LaFourchette\FixturesBundle\Tests\DependencyInjection;
 use LaFourchette\FixturesBundle\DependencyInjection\FixturesExtension;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 
-class LaFourchetteCoreExtensionTest extends AbstractExtensionTestCase
+class FixturesExtensionTest extends AbstractExtensionTestCase
 {
     protected function getContainerExtensions()
     {
