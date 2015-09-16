@@ -5,12 +5,12 @@ Simplify usage of fixtures into your code / tests / dev.
 
 It's a symfony extension for nelmio/alice library.
 
-Sample, load fixture a yml ( and it's **dependencies** ) : 
+Sample, load some fixtures written in yml ( and it's **dependencies** ) : 
 ```php
-	$fixturesLoaderRegistry = $this->container->get('fixtures.loader.registry');
-	$fixturesLoader = $fixturesLoaderRegistry->getLoader('default');
+    $fixturesLoaderRegistry = $this->container->get('fixtures.loader.registry');
+    $fixturesLoader = $fixturesLoaderRegistry->getLoader('default');
 	
-	$fixturesLoader->load(['@MyBundle/Resources/fixtures/myfixture']);
+    $fixturesLoader->load(['@MyBundle/Resources/fixtures/myfixture']);
 ```
 
 ## Require 
@@ -28,20 +28,20 @@ Add ```"lafourchette/fixtures-bundle"```to your composer file.
 
 ```json
 "require-dev": {
-"lafourchette/fixtures-bundle": "dev-master"
+    "lafourchette/fixtures-bundle": "dev-master"
 }
 ```
 
 And add ```FixturesBundle```to your ```AppKernel.php``` file.
 ```php
 if ($this->getEnvironment() != 'prod') {
-            $bundles[] = new LaFourchette\FixturesBundle\FixturesBundle();
-        }
+    $bundles[] = new LaFourchette\FixturesBundle\FixturesBundle();
+}
 ```
 
 ## Configuration
 
-You have to configure each ```EntityManager``` you use for loading corresponding fixtures.
+Every ```EntityManager``` has to be setup to load corresponding fixtures.
 
 Sample ```fixtures.yml``` :
 ```yml
@@ -54,12 +54,12 @@ fixtures:
                 - @MyBundle/Resources/fixtures/myfixture2
 
         dependencies:
-            # indicate fixture dependencies, for each fixture
+            # specify fixture dependencies, for every fixture
             @MyBundle/Resources/fixtures/fixture1
                 - @MyBundle/Resources/fixtures/fixtureRequiredByFixture1
             
         providerClasses:
-	        # You can indicate wich providers you want to use with the loader
+	        # You can specify which providers you want to use with the loader
             - MyBundle\Fixture\DefaultValuesProvider
 
         fixturesDataProcessor: la_fourchette.fixtures.data_processor
@@ -69,13 +69,13 @@ fixtures:
 
 ### Provider classes 
 
-Not required, but you can indicate for each loader in the config file, the provider to be used.
+Not required, but you can specify the provider to be used for every loader, in the config file.
 See configuration format and nelmio/alice documentation section about providers : https://github.com/nelmio/alice/blob/master/doc/customizing-data-generation.md#add-a-custom-faker-provider-class
 
 ### Data Processor
 
-You can use a data processor for your fixtures. It's 
-See configuration format and documentation of data processor here : 
+You can use a data processor for your fixtures.
+See configuration format and documentation of data processors here : 
 https://github.com/nelmio/alice/blob/master/doc/processors.md
 
 ## Usage
@@ -91,18 +91,18 @@ To load fixtures, you have to get the corresponding "**loader**" of your *entity
 
 #### Warning
 
-Loader by default purge automaticaly all entities of database ( by do a TRUNCATE ! )
-You can avoid these by passing the second argument to load method : 
+Loader by default automaticaly purges all you database entities ( a TRUNCATE is executed ! )
+You can avoid these by passing the second argument to `load` method : 
 
 ```php
-	public function load(array $fixtures, $purge = true) {}
+    public function load(array $fixtures, $purge = true) {}
 ```
 
 
 ### Load a simple fixture file : src/MyBundle/Resources/fixtures/fixture.yml
 
 ```php
-	$fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/fixture']);
+    $fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/fixture']);
 ```
 
 ### Load all required fixture of fixture file : src/MyBundle/Resources/fixtures/fixture.yml
@@ -114,22 +114,22 @@ But loader system include a dependency system.
 You can declare a dependency in your config file like this : 
 ```yml
 dependencies:
-	# indicate fixture dependencies, for each fixture
-	@MyBundle/Resources/fixtures/fixture
-	    - @MyBundle/Resources/fixtures/fixtureRequired
+    # indicate fixture dependencies, for each fixture
+    @MyBundle/Resources/fixtures/fixture
+        - @MyBundle/Resources/fixtures/fixtureRequired
 ```
 
 And now if you do : 
 
 ```php
-	$fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/fixture']);
+    $fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/fixture']);
 ```
 
 Then the loader load **fixtureRequired.yml** and after **fixture.yml**. 
 
 ### Load a group of fixtures
 
-In supplement of declarating fixtures dependencies, you can also define a naming group of fixtures in your config file.
+In addition of declarating fixtures dependencies, you can also define a naming group of fixtures in your config file.
 
 ```yml
  groups:
@@ -140,17 +140,17 @@ In supplement of declarating fixtures dependencies, you can also define a naming
 ```
 And to use it in the code, simply do : 
 ```php
-	$fixturesLoaderDefault->load(['@Group:groupName']);
+    $fixturesLoaderDefault->load(['@Group:groupName']);
 ```
 
-**Note** : the **dependencies** are still in function in groups, so if dependencies are declared for *myfixture2* or *myfixture*, they will be loaded in the good order. And you can also **required a group in a dependency**.
+**Note** : the **dependencies** are still in function in groups, so if dependencies are declared for *myfixture2* or *myfixture*, they will be loaded in the correct order. And you can also **required a group in a dependency**.
 
 ### Advanced : use different SETs of fixtures 
 
-In some case groups is not enough, and you want to load fixtures according to a *variable*. 
+In some cases groups are not enough, you may want to load fixtures according to a *variable*. 
 We call it a **SET** of fixtures. 
 
-A **Set** is simply a group of fixture created for working together, but with the same dependencies and same group than all your fixtures. 
+A **Set** is simply a group of fixtures created for working together, but with the same dependencies and same groups than all your fixtures. 
 A set is not declared in the configuration, you just have to organise your fixtures files into **the same directory**. 
 
 Example, defining two sets : mySet1 and mySet2
@@ -166,25 +166,25 @@ src/MyBundle/Resources/fixtures/mySet2/fixtureRequiredBy1.yml
 
 Now if you want to load src/MyBundle/Resources/fixtures/mySet1/fixture.yml, you can do : 
 ```php
-	$fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/{set}/fixture:mySet1']);
+    $fixturesLoaderDefault->load(['@MyBundle/Resources/fixtures/{set}/fixture:mySet1']);
 ```
 
-The syntax of fixture path (if using set) is : 
+The fixture path syntax (if using set) is: 
 *path* **:** *setName*
 
 The **{set}** is automatically replaced by the required set. 
 
-The power of set, is that these syntax works also in the config file so you can have : 
+The power of set system is that those syntaxes also work in the config file so you can have : 
 
 ```yml
 dependencies:
-	# indicate fixture dependencies, for each fixture
-	@MyBundle/Resources/fixtures/{set}/fixture
-	    - @MyBundle/Resources/fixtures/{set}/fixtureRequired
-	    - @MyBundle/Resources/fixtures/common/fixtureCommonOfAllSet
+    # indicate fixture dependencies, for each fixture
+    @MyBundle/Resources/fixtures/{set}/fixture
+        - @MyBundle/Resources/fixtures/{set}/fixtureRequired
+        - @MyBundle/Resources/fixtures/common/fixtureCommonOfAllSet
 ```
 
-And now, you have declared dependencies for all your set, and you can have common fixture for all set.
+And now, you have declared dependencies for all your sets, and you can have common fixtures for all sets.
 
 ## Tools
 
@@ -202,7 +202,7 @@ app/console lafourchette:fixtures:load defaultEm @MyBundle/Resources/fixtures/{s
 
 **Note** : not emplemented yet
 
-The bundle provide a behat context to use fixtures loader system.
+The bundle provides a behat context to use fixtures loader system.
 
 Add it to your behat config file : behat.yml
 ```yml
@@ -214,7 +214,7 @@ default:
             - "@fixtures.loader.registry"
 ```
 
-Now you have new sentence available and it's really easy to load required fixture for each scenario. (to avoid scenario dependencies ...)
+Now you have new sentences available and it's really easy to load required fixtures for every scenario. (to avoid scenario dependencies ...)
 
 ```gherkin
 Feature: My feature
