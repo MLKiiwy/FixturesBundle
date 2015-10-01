@@ -1,5 +1,7 @@
 <?php
 
+namespace LaFourchette\FixturesBundle\Behat\Context;
+
 use Behat\Behat\Context\Environment\InitializedContextEnvironment;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
@@ -35,7 +37,7 @@ class CommandContext extends Context implements KernelAwareContext
     private $exitCode = null;
 
     /**
-     * @var Exception|null
+     * @var \Exception|null
      */
     private $exception = null;
 
@@ -71,12 +73,12 @@ class CommandContext extends Context implements KernelAwareContext
     /**
      * @return Application
      *
-     * @throws Exception
+     * @throws \Exception
      */
     private function getApplication()
     {
         if ($this->application == null) {
-            throw new Exception(
+            throw new \Exception(
                 'Application not initialized. Kernel not provided ! '
                 .'Register \Behat\Symfony2Extension\Extension on you behat.yml'
             );
@@ -99,18 +101,20 @@ class CommandContext extends Context implements KernelAwareContext
 
     /**
      * @When print command output
+     *
+     * @throws \Exception
      */
-    public function iPrintCommandOutput()
+    public function printCommandOutput()
     {
-        echo $this->getRawCommandOutput();
+        $this->printDebug($this->getRawCommandOutput());
     }
 
     /**
-     * @When print command exception
+     * @When DEBUG: I dump command exception
      */
     public function debugIDumpCommandException()
     {
-        if ($this->exception instanceof Exception) {
+        if ($this->exception instanceof \Exception) {
             $this->printDebug(
                 sprintf(
                     'Exception message : %s'."\n"
@@ -127,7 +131,7 @@ class CommandContext extends Context implements KernelAwareContext
     }
 
     /**
-     * @When print command exit code
+     * @When DEBUG: I dump command exit code
      */
     public function debugIDumpCommandExitCode()
     {
@@ -156,7 +160,7 @@ class CommandContext extends Context implements KernelAwareContext
             );
         } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
             throw new ExpectationException(
-                sprintf('Command exit code "%s" not equals to "%s" !', $this->exitCode, $code),
+                sprintf('Command exit code "%s" not equals to "%s" ! Output:%s', $this->exitCode, $code, PHP_EOL.$this->getRawCommandOutput()),
                 $this->minkContext->getSession(),
                 $e
             );
@@ -173,7 +177,7 @@ class CommandContext extends Context implements KernelAwareContext
      */
     public function commandShouldThrowException(PyStringNode $message = null)
     {
-        if (!$this->exception instanceof Exception) {
+        if (!$this->exception instanceof \Exception) {
             throw new ExpectationException(
                 'Command has not thrown exception !',
                 $this->minkContext->getSession()
@@ -202,7 +206,7 @@ class CommandContext extends Context implements KernelAwareContext
     /**
      * @param PyStringNode $string
      *
-     * @throws Exception
+     * @throws \Exception
      * @throws ExpectationException
      *
      * @Then Command output should be:
@@ -210,10 +214,12 @@ class CommandContext extends Context implements KernelAwareContext
     public function outputShouldBe(PyStringNode $string)
     {
         $commandOutput = $this->getRawCommandOutput();
+        $pyStringNodeContent = $this->replaceDates($string->getRaw());
+
         try {
             \PHPUnit_Framework_Assert::assertSame(
-                trim($string->getRaw()),
-                trim($commandOutput)
+                trim(str_replace(' ', '', $pyStringNodeContent)),
+                trim(str_replace(' ', '', $commandOutput))
             );
         } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
             throw new ExpectationException(
@@ -231,7 +237,7 @@ class CommandContext extends Context implements KernelAwareContext
     /**
      * @param PyStringNode $string
      *
-     * @throws Exception
+     * @throws \Exception
      * @throws ExpectationException
      *
      * @Then Command output should contains:
@@ -261,12 +267,12 @@ class CommandContext extends Context implements KernelAwareContext
     /**
      * @return string
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function getRawCommandOutput()
     {
         if (!$this->output) {
-            throw new Exception('No command output !!');
+            throw new \Exception('No command output !!');
         }
         rewind($this->output->getStream());
 
@@ -291,7 +297,7 @@ class CommandContext extends Context implements KernelAwareContext
 
         try {
             $this->exitCode = $this->application->doRun($input, $this->output);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->exception = $e;
             $this->exitCode = -255;
         }

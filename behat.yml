@@ -3,13 +3,13 @@ default:
         default:
             contexts:
                - Behat\MinkExtension\Context\MinkContext
-               - CommonContext:
+               - LaFourchette\FixturesBundle\Behat\Context\CommonContext:
                    - '@profiler'
-               - CommandContext
+               - LaFourchette\FixturesBundle\Behat\Context\CommandContext
                - LaFourchette\FixturesBundle\Behat\Context\FixturesContext:
                    - "@service_container"
                    - "@fixtures.loader.registry"
-               - DatabaseContext:
+               - LaFourchette\FixturesBundle\Behat\Context\DatabaseContext:
                    - "@profiler"
                    - "@doctrine"
     extensions:

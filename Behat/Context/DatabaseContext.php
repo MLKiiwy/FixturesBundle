@@ -1,5 +1,7 @@
 <?php
 
+namespace LaFourchette\FixturesBundle\Behat\Context;
+
 use Behat\Gherkin\Node\PyStringNode;
 use Doctrine\Bundle\DoctrineBundle\DataCollector\DoctrineDataCollector;
 use Doctrine\Bundle\DoctrineBundle\Registry;
@@ -40,7 +42,7 @@ class DatabaseContext extends Context
         $queries = $this->getDbCollector()->getQueries();
         foreach ($queries as $connection => $queriesByConnection) {
             foreach ($queriesByConnection as $query) {
-                $this->printDebug('On "'.$connection.'" run "'.$query['sql'].'" using ['.implode(', ', $query['params']).']');
+                $this->printDebug('On "'.$connection.'" run "'.$this->cleanSQLQuery($query['sql']).'" using ['.implode(', ', $query['params']).']');
             }
         }
     }
@@ -61,7 +63,8 @@ class DatabaseContext extends Context
         }
 
         foreach ($queries[$connection] as $query) {
-            if (preg_match('/^'.$this->replaceParameters(trim($string->getRaw())).'$/', $query['sql'])) {
+            $sql = $this->cleanSQLQuery($query['sql']);
+            if (preg_match('/^'.$this->replaceParameters(trim($string->getRaw())).'$/', $sql)) {
                 return;
             }
         }
@@ -114,7 +117,8 @@ class DatabaseContext extends Context
 
         $actualCount = 0;
         foreach ($queries[$connection] as $query) {
-            if (preg_match('/^'.$type.'.* /i', $query['sql'])) {
+            $sql = $this->cleanSQLQuery($query['sql']);
+            if (preg_match('/^'.$type.'.* /i', $sql)) {
                 ++$actualCount;
             }
         }
@@ -147,7 +151,8 @@ class DatabaseContext extends Context
 
         $actualCount = 0;
         foreach ($queries[$connection] as $query) {
-            if (preg_match('/^ '.$table.' /i', $query['sql'])) {
+            $sql = $this->cleanSQLQuery($query['sql']);
+            if (preg_match('/^ '.$table.' /i', $sql)) {
                 ++$actualCount;
             }
         }
@@ -181,11 +186,23 @@ class DatabaseContext extends Context
 
         $actualCount = 0;
         foreach ($queries[$connection] as $query) {
-            $regexp = '/^'.$type.'.* (?:FROM|INTO) '.$table.' /i';
-            if (strtoupper($type) === 'UPDATE') {
-                $regexp = '/^'.$type.' '.$table.' /i';
+            $sql = $this->cleanSQLQuery($query['sql']);
+            switch (strtoupper($type)) {
+                case 'UPDATE':
+                    $regexp = '/^'.$type.' '.$table.' /i';
+                    break;
+                case 'DROP':
+                    $regexp = '/^'.$type.' TABLE '.$table.'/i';
+                    break;
+                case 'INSERT':
+                    $regexp = '/^'.$type.' INTO '.$table.' /i';
+                    break;
+                case 'SELECT':
+                default:
+                    $regexp = '/^'.$type.'.* FROM '.$table.' /i';
+                    break;
             }
-            if (preg_match($regexp, $query['sql'])) {
+            if (preg_match($regexp, $sql)) {
                 ++$actualCount;
             }
         }
@@ -239,6 +256,22 @@ class DatabaseContext extends Context
     }
 
     /**
+     * @param string $sql
+     * @param int    $shardId
+     * @param string $connectionName
+     *
+     * @When I execute the SQL query :sql on shard :shardId on connection :connectionName
+     */
+    public function executeSqlQueryOnShard($sql, $shardId, $connectionName)
+    {
+        $sql = $this->replaceParameters($sql);
+        /** @var \Doctrine\DBAL\Sharding\PoolingShardConnection $connection */
+        $connection = $this->doctrine->getConnection($connectionName);
+        $connection->connect($shardId);
+        $this->result = $connection->fetchAll($sql);
+    }
+
+    /**
      * @When print last query result
      */
     public function printLastQueryResult()
@@ -262,7 +295,7 @@ class DatabaseContext extends Context
      *
      * @throws \Exception
      *
-     * @When the SQL query result row :rowNumber should contain values :
+     * @When the SQL query result row :rowNumber should contain values:
      */
     public function sqlQueryResultShouldContainValues($rowNumber, PyStringNode $stringNode)
     {
@@ -306,5 +339,15 @@ class DatabaseContext extends Context
         }
 
         return $dbCollector;
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
+    private function cleanSQLQuery($sql)
+    {
+        return trim(preg_replace('/\n/', '', preg_replace('/[ ]{2,}/', ' ', $sql)));
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace LaFourchette\FixturesBundle\Behat\Context;
+
 use Symfony\Component\HttpKernel\Profiler\Profiler;
 
 class CommonContext extends Context
@@ -19,13 +21,15 @@ class CommonContext extends Context
 
     /**
      * @Given I enable the profiler
+     *
+     * @throws \Exception
      */
     public function iEnableTheProfiler()
     {
         if ($this->profiler) {
             $this->profiler->enable();
         } else {
-            throw new Exception('cannot enable profiler');
+            throw new \Exception('cannot enable profiler');
         }
     }
 
@@ -38,5 +42,19 @@ class CommonContext extends Context
 
         exec("rm -rf {$path}");
         mkdir($path);
+    }
+
+    /**
+     * @param string $filePath
+     *
+     * @return string
+     */
+    protected function getRealPath($filePath)
+    {
+        if (strlen($filePath) > 1 && !in_array($filePath[0], array('.', '/'))) {
+            $filePath = __DIR__.'/../'.$filePath;
+        }
+
+        return $filePath;
     }
 }

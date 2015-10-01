@@ -2,12 +2,12 @@
 
 namespace LaFourchette\FixturesBundle\Behat\Context;
 
-use Behat\Behat\Context\Context;
+use Behat\Behat\Context\Context as BaseContext;
 use Behat\Gherkin\Node\TableNode;
 use LaFourchette\FixturesBundle\Registry;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class FixturesContext implements Context
+class FixturesContext implements BaseContext
 {
     /**
      * @var ContainerInterface
