@@ -1,5 +1,7 @@
 <?php
 
+namespace LaFourchette\FixturesBundle\Behat\Context;
+
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -61,7 +63,7 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
     }
 
     /**
-     * @param $string
+     * @param string $string
      *
      * @return string
      */
@@ -69,13 +71,16 @@ class Context implements SnippetAcceptingContext, KernelAwareContext
     {
         return preg_replace_callback(
             '/##([\w]+)\((.*)\)##/',
+
+            /**
+             * @param string $matches
+             */
             function ($matches) {
                 switch ($matches[1]) {
                     case 'now':
                         $dt = new \DateTime();
 
                         return $dt->format($matches[2]);
-                        break;
                 }
             },
             $string
