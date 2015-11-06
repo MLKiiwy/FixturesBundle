@@ -6,6 +6,7 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManager;
 use LaFourchette\FixturesBundle\Event\FixturesLoaderEvent;
 use Nelmio\Alice\Fixtures;
+use Nelmio\Alice\Persister\Doctrine;
 use Nelmio\Alice\ProcessorInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -74,7 +75,7 @@ class FixturesLoader
             $this->purgeDatabase();
         }
 
-        $loader = new Fixtures($this->entityManager);
+        $loader = new Fixtures(new Doctrine($this->entityManager));
 
         if ($this->fixturesDataProcessor) {
             $loader->addProcessor($this->fixturesDataProcessor);
