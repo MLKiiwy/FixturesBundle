@@ -90,6 +90,9 @@ class FixturesLoader
         }
 
         $this->eventDispatcher->dispatch(FixturesLoaderEvent::EVENT_AFTER_LOAD_FIXTURES, new FixturesLoaderEvent());
+
+        // Clear entity cache, because loading fixtures have to not change your code execution
+        $this->entityManager->clear();
     }
 
     public function purgeDatabase()
