@@ -297,7 +297,7 @@ class DatabaseContext extends Context
      *
      * @When the SQL query result row :rowNumber should contain values:
      */
-    public function sqlQueryResultShouldContainValues($rowNumber, PyStringNode $stringNode)
+    public function sqlQueryResultRowShouldContainValues($rowNumber, PyStringNode $stringNode)
     {
         $rawString = $this->replaceParameters($stringNode->getRaw());
         $expectedValues = json_decode($rawString, true);

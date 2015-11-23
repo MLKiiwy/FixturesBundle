@@ -37,11 +37,7 @@ class FixturesContext implements BaseContext
      */
     public function setDataInConnectionWithFixtureList($connectionName, TableNode $tableNode)
     {
-        $fixtures = [];
-        foreach ($tableNode->getRows() as $row) {
-            $fixtures[] = $row[0];
-        }
-        $this->loadFixtures($connectionName, $fixtures);
+        $this->loadFixtures($connectionName, $this->tableNodeToArray($tableNode));
     }
 
     /**
@@ -61,5 +57,17 @@ class FixturesContext implements BaseContext
     public function purgeDatabase($connectionName)
     {
         $this->fixtureLoaderRegistry->getLoader($connectionName)->purgeDatabase();
+    }
+
+    /**
+     * @param TableNode $tableNode
+     *
+     * @return array
+     */
+    protected function tableNodeToArray(TableNode $tableNode)
+    {
+        return array_map(function ($row) {
+            return $row[0];
+        }, $tableNode->getRows());
     }
 }
